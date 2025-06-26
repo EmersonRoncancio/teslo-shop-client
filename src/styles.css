@@ -1,6 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
-@import "tailwindcss";
 @plugin "daisyui" {
   themes: sunset --default;
+}
+
+.fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
