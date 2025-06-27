@@ -3,13 +3,19 @@
     <img [src]="resourceImage.value()" [alt]="product().title" class="w-full" />
   </figure>
   <div class="card-body">
-    <h2 class="card-title">{{ product().title }}</h2>
+    <a
+      class="text-xl font-extrabold text-secondary"
+      [routerLink]="['/product', product().id]"
+    >
+      {{ product().title }}
+    </a>
     <p>
       {{ product().description | lengthDescription }}
     </p>
     <div class="card-actions justify-end">
       <a
-        [routerLink]="['/product', 'shirt']"
+        class="text-secondary"
+        [routerLink]="['/product', product().id]"
         routerLinkActive="router-link-active"
         >Ver producto</a
       >

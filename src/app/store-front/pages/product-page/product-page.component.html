@@ -1,5 +1,26 @@
-<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-  <app-card-product />
-  <app-card-product />
-  <app-card-product />
+<!-- <section>
+  @if(resourceProduct.hasValue()){
+  <h2>
+    {{ resourceProduct.value().title }}
+  </h2>
+  }
+  <img [src]="resourceProduct.value()?.images" alt="" />
+</section> -->
+@if (resourceProduct.isLoading()) {
+<section class="w-full flex justify-center items-center h-screen">
+  <div class="loading loading-spinner loading-lg"></div>
 </section>
+} @if(resourceProduct.hasValue()){
+<section class="grid grid-cols-1 md:grid-cols-2 gap-3">
+  <app-carousel [images]="resourceProduct.value().images" />
+  <div>
+    <h2 class="text-2xl font-bold">{{ resourceProduct.value().title }}</h2>
+    <div class="divider"></div>
+    <div>
+      <p>
+        {{ resourceProduct.value().description }}
+      </p>
+    </div>
+  </div>
+</section>
+}

@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, Type } from '@angular/core';
-import { Products } from '@products/interfaces/getall-products.interface';
+import {
+  Product,
+  Products,
+} from '@products/interfaces/getall-products.interface';
 import { ProductsMapper } from '@products/mappers/products.mapper';
 import { map, tap, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -40,5 +43,13 @@ export class ProductsServiceService {
     const imageUrl = `${this.urlApi}/files/product/${image}`;
 
     return of(imageUrl);
+  }
+
+  getProductById(productId: string) {
+    return this.http.get<Product>(`${this.urlApi}/products/${productId}`).pipe(
+      map((response) => {
+        return ProductsMapper.mapProduct(response);
+      })
+    );
   }
 }

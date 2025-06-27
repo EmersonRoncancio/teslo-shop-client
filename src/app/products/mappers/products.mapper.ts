@@ -6,17 +6,21 @@ import { ProductsMapperInterface } from '@products/interfaces/products-mapper.in
 
 export class ProductsMapper {
   static mapProducts(products: Products): ProductsMapperInterface[] {
-    return products.products.map((product: Product) => {
-      return {
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        description: product.description,
-        stock: product.stock,
-        sizes: product.sizes,
-        gender: product.gender,
-        images: product.images,
-      };
+    return products.products.map((product) => {
+      return ProductsMapper.mapProduct(product);
     });
+  }
+
+  static mapProduct(product: Product): ProductsMapperInterface {
+    return {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      description: product.description,
+      stock: product.stock,
+      sizes: product.sizes,
+      gender: product.gender,
+      images: product.images,
+    };
   }
 }
