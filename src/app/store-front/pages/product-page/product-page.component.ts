@@ -8,7 +8,7 @@ import { CarouselComponent } from '../../../products/components/carousel/carouse
 
 @Component({
   selector: 'app-product-page',
-  imports: [CardProductComponent, CarouselComponent],
+  imports: [CarouselComponent],
   templateUrl: './product-page.component.html',
 })
 export class ProductPageComponent {
