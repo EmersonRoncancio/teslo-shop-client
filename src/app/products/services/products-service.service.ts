@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, Type } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import {
   Product,
   Products,
@@ -22,8 +24,17 @@ interface Options {
 export class ProductsServiceService {
   http = inject(HttpClient);
   urlApi = environment.url_api;
+  activateRoute = toSignal(
+    inject(ActivatedRoute).queryParamMap.pipe(
+      map((params) => (params.get('page') ? +params.get('page')! : 1)),
+      map((param) => (isNaN(param) ? 1 : param))
+    ),
+    { initialValue: 1 }
+  );
 
-  getAllProducts({ limit = 9, offset = 0, gender = '' }: Options = {}) {
+  getPagination() {}
+
+  getAllProducts({ limit = 9, offset = 1, gender = '' }: Options = {}) {
     return this.http
       .get<Products>(`${this.urlApi}/products`, {
         params: {

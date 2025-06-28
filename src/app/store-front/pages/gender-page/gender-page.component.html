@@ -2,10 +2,11 @@
   Todos los productos
   <span class="badge badge-secondary">Nuevo</span>
 </h2>
+<pagination [totalPages]="resourceProducts.value()?.page || 1" />
 <section
   class="grid grid-cols-1 place-content-center place-items-center md:grid-cols-2 lg:grid-cols-3 gap-4 p-4"
 >
-  @for (product of resourceProducts.value(); track product.id) {
+  @for (product of resourceProducts.value()?.products; track product.id) {
   <app-card-product [product]="product" />
   }
 </section>

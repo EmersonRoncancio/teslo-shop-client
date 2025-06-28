@@ -2,13 +2,20 @@ import {
   Product,
   Products,
 } from '@products/interfaces/getall-products.interface';
-import { ProductsMapperInterface } from '@products/interfaces/products-mapper.interface';
+import {
+  ProductsMapperInterface,
+  ProductsMapperType,
+} from '@products/interfaces/products-mapper.interface';
 
 export class ProductsMapper {
-  static mapProducts(products: Products): ProductsMapperInterface[] {
-    return products.products.map((product) => {
-      return ProductsMapper.mapProduct(product);
-    });
+  static mapProducts(products: Products): ProductsMapperType {
+    return {
+      page: products.pages,
+      totalPages: products.count,
+      products: products.products.map((product) =>
+        ProductsMapper.mapProduct(product)
+      ),
+    };
   }
 
   static mapProduct(product: Product): ProductsMapperInterface {

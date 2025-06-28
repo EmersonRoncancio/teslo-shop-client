@@ -1,0 +1,14 @@
+<section class="flex justify-center items-center">
+  <div class="join">
+    @for (page of getPages(); track $index) {
+    <button
+      [routerLink]="[]"
+      [queryParams]="{ page: page }"
+      [class.btn-secondary]="page === currentPage()"
+      class="join-item btn"
+    >
+      {{ page }}
+    </button>
+    }
+  </div>
+</section>

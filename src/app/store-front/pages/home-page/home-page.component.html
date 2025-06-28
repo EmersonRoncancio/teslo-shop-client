@@ -2,10 +2,20 @@
   Todos los productos
   <span class="badge badge-secondary">Nuevo</span>
 </h2>
+<pagination
+  [totalPages]="resourceProducts.value()?.page || 1"
+  [currentPage]="route()"
+/>
 <section
   class="grid grid-cols-1 place-content-center place-items-center md:grid-cols-2 lg:grid-cols-3 gap-4 p-4"
 >
-  @for (product of resourceProducts.value(); track product.id) {
+  @for (product of resourceProducts.value()?.products; track product.id) {
   <app-card-product [product]="product" />
   }
 </section>
+@if(resourceProducts.isLoading()) {
+<div class="flex justify-center items-center h-screen">
+  <span class="loading loading-spinner loading-lg"></span>
+</div>
+
+}

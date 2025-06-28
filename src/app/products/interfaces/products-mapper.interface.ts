@@ -8,3 +8,9 @@ export interface ProductsMapperInterface {
   gender: string;
   images: string[];
 }
+
+export interface ProductsMapperType {
+  page: number;
+  totalPages: number;
+  products: ProductsMapperInterface[];
+}
