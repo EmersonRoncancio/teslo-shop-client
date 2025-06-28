@@ -13,16 +13,21 @@ import { PaginationComponent } from '../../../shared/components/pagination/pagin
 })
 export class GenderPageComponent {
   productsService = inject(ProductsServiceService);
+  paginationService = inject(ProductsServiceService);
+  page = this.paginationService.activateRoute;
   gender = toSignal(
     inject(ActivatedRoute).params.pipe(map((param) => param['gender'] || ''))
   );
 
   resourceProducts = rxResource({
-    params: () => ({ gender: this.gender() }),
+    params: () => ({ gender: this.gender(), page: this.page() - 1 }),
     stream: ({ params }) => {
       if (!params.gender) return of();
 
-      return this.productsService.getAllProducts({ gender: params.gender });
+      return this.productsService.getAllProducts({
+        gender: params.gender,
+        offset: params.page * 9,
+      });
     },
   });
 }

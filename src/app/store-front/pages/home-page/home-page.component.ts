@@ -26,13 +26,7 @@ export class HomePageComponent {
     stream: ({ params }) => {
       if (!params.products) return of();
 
-      return this.productsService
-        .getAllProducts({ offset: params.page * 9 })
-        .pipe(
-          tap((products) => {
-            console.log('products', products);
-          })
-        );
+      return this.productsService.getAllProducts({ offset: params.page * 9 });
     },
   });
 }

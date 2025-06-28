@@ -24,11 +24,7 @@ export class ProductPageComponent {
     stream: ({ params }) => {
       if (!params.productId) return of();
 
-      return this.productsService.getProductById(params.productId).pipe(
-        tap((product) => {
-          console.log('Product loaded:', product);
-        })
-      );
+      return this.productsService.getProductById(params.productId);
     },
   });
 }
