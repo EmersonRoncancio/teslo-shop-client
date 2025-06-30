@@ -12,7 +12,7 @@ import {
 } from '@products/interfaces/products-mapper.interface';
 import { ProductsMapper } from '@products/mappers/products.mapper';
 import { map, tap, of, Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { environment } from 'environments/environment';
 
 type Gender = 'men' | 'women' | 'unisex' | 'kid' | '';
 
