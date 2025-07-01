@@ -5,7 +5,7 @@ import { ProductsMapperInterface } from '@products/interfaces/products-mapper.in
 import { LengthDescriptionPipe } from '@products/pipes/length-description.pipe';
 import { ProductsServiceService } from '@products/services/products-service.service';
 import { of } from 'rxjs';
-import { environment } from 'environments/environment';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-card-product',
