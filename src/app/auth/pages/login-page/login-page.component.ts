@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthServiceService } from '../../services/auth-service.service';
 
 @Component({
   selector: 'app-login-page',
@@ -8,8 +9,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
   templateUrl: './login-page.component.html',
 })
 export class LoginPageComponent {
+  authService = inject(AuthServiceService);
   fb = inject(FormBuilder);
   hasError = signal(false);
+  hasValue = signal(false);
+  router = inject(Router);
 
   loginForms = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -18,8 +22,20 @@ export class LoginPageComponent {
 
   onSubmit() {
     if (this.loginForms.valid) {
-      // Aquí puedes manejar la lógica de inicio de sesión
-      console.log('Login successful', this.loginForms.value);
+      this.authService
+        .loginAcces(
+          this.loginForms.value.email!,
+          this.loginForms.value.password!
+        )
+        .subscribe({
+          next: () => this.router.navigateByUrl('/'),
+          error: () => {
+            this.hasError.set(true);
+            setTimeout(() => {
+              this.hasError.set(false);
+            }, 3000);
+          },
+        });
     } else {
       this.hasError.set(true);
       setTimeout(() => {
