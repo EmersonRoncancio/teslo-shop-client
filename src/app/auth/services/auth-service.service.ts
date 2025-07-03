@@ -15,7 +15,7 @@ export class AuthServiceService {
   urlApi = environment.url_api;
   private _AuthStatus = signal<AuthStatus>('checking');
   private _user = signal<User | null>(null);
-  private _token = signal<string | null>(null);
+  private _token = signal<string | null>(localStorage.getItem('token'));
   http = inject(HttpClient);
 
   chechStatus = rxResource({
@@ -46,17 +46,11 @@ export class AuthServiceService {
       })
       .pipe(
         tap((response) => {
-          this._user.set(response.user);
-          this._token.set(response.token);
-          this._AuthStatus.set('authenticated');
-          localStorage.setItem('token', response.token);
+          this.handleStatusSuccess(response.user, response.token);
         }),
         map(() => true),
         catchError((error) => {
-          this._AuthStatus.set('not-authenticated');
-          this._user.set(null);
-          this._token.set(null);
-          localStorage.removeItem('token');
+          this.handleStatusError();
           return error;
         })
       );
@@ -65,9 +59,7 @@ export class AuthServiceService {
   checkAuthStatus(): Observable<boolean> {
     const token = localStorage.getItem('token');
     if (!token) {
-      this._AuthStatus.set('not-authenticated');
-      this._user.set(null);
-      this._token.set(null);
+      this.logout();
       return of(false);
     }
     return this.http
@@ -78,20 +70,34 @@ export class AuthServiceService {
       })
       .pipe(
         tap((response) => {
-          this._user.set(response.user);
-          this._token.set(response.token);
-          this._AuthStatus.set('authenticated');
-          localStorage.setItem('token', response.token);
+          this.handleStatusSuccess(response.user, response.token);
         }),
         map(() => true),
         catchError(() => {
-          console.error('Error checking authentication status');
-          this._AuthStatus.set('not-authenticated');
-          this._user.set(null);
-          this._token.set(null);
-          localStorage.removeItem('token');
+          this.handleStatusError();
           return of(false);
         })
       );
+  }
+
+  logout() {
+    this._AuthStatus.set('not-authenticated');
+    this._user.set(null);
+    this._token.set(null);
+    localStorage.removeItem('token');
+  }
+
+  private handleStatusSuccess(user: User, token: string) {
+    this._AuthStatus.set('authenticated');
+    this._user.set(user);
+    this._token.set(token);
+    localStorage.setItem('token', token || '');
+  }
+
+  private handleStatusError() {
+    this._AuthStatus.set('not-authenticated');
+    this._user.set(null);
+    this._token.set(null);
+    localStorage.removeItem('token');
   }
 }

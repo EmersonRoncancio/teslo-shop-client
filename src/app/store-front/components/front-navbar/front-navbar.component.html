@@ -64,7 +64,27 @@
       </li>
     </ul>
   </div>
+  @if(authService.authStatus() === 'authenticated') {
   <div class="navbar-end">
-    <a class="btn">Button</a>
+    <a class="btn btn-ghost text-secondary" routerLink="/cart">
+      {{ authService.user()?.fullName }}
+    </a>
   </div>
+  <!-- <div class="navbar-center">
+    <span class="badge badge-secondary">user</span>
+  </div> -->
+  <div class="navbar-center">
+    <button
+      (click)="authService.logout()"
+      class="btn btn-secondary"
+      (click)="authService.logout()"
+    >
+      Cerrar sesión
+    </button>
+  </div>
+  } @else if(authService.authStatus() === 'not-authenticated') {
+  <div class="navbar-end">
+    <a routerLink="/auth/login" class="btn btn-secondary">Iniciar sesión</a>
+  </div>
+  }
 </div>
