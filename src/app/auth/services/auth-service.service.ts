@@ -7,6 +7,11 @@ import { AccesUser } from '../interfaces/acces.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
+interface registerUserType {
+  fullName: string;
+  email: string;
+  password: string;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -76,6 +81,22 @@ export class AuthServiceService {
         catchError(() => {
           this.handleStatusError();
           return of(false);
+        })
+      );
+  }
+
+  registerUser(registerUser: registerUserType): Observable<boolean | any> {
+    console.log(registerUser);
+    return this.http
+      .post<AccesUser>(`${this.urlApi}/auth/register`, registerUser)
+      .pipe(
+        tap((response) => {
+          this.handleStatusSuccess(response.user, response.token);
+        }),
+        map(() => true),
+        catchError((error) => {
+          this.handleStatusError();
+          return error;
         })
       );
   }
