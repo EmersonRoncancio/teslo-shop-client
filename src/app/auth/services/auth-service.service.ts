@@ -40,7 +40,9 @@ export class AuthServiceService {
     return 'not-authenticated';
   });
 
-  user = computed<User | null>(() => this._user());
+  user = computed<User | null>(() => {
+    return this._user();
+  });
   token = computed<string | null>(() => this._token());
 
   loginAcces(email: string, password: string): Observable<boolean | any> {
