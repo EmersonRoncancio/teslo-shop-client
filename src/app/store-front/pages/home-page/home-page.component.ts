@@ -13,9 +13,8 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './home-page.component.html',
 })
 export class HomePageComponent {
-  paginationService = inject(ProductsServiceService);
   productsService = inject(ProductsServiceService);
-  route = this.paginationService.activateRoute;
+  route = this.productsService.activateRoute;
   products = signal({});
 
   resourceProducts = rxResource({

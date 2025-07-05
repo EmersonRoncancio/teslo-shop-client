@@ -1,6 +1,26 @@
 <h1 class="text-xl font-bold">Listado De Productos</h1>
 <h3 class="text-md">
   Aquí puedes ver todos los productos que has creado, editarlos o eliminarlos.
-  <span class="text-accent">10</span>
+  <span class="text-accent">{{ resourcePrtoducts.value()?.totalPages }}</span>
 </h3>
 <div class="divider w-full"></div>
+<div class="w-full">
+  @if(resourcePrtoducts.hasValue()){
+  <div class="flex justify-between">
+    <pagination
+      [currentPage]="page()"
+      [totalPages]="resourcePrtoducts.value()?.page || 1"
+    ></pagination>
+
+    <select #pageSize (change)="pageSizeSignal.set(pageSize.value)">
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+  </div>
+
+  <app-list-products [products]="resourcePrtoducts.value()"></app-list-products>
+  }
+</div>

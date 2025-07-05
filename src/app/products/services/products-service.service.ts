@@ -39,8 +39,6 @@ export class ProductsServiceService {
     { initialValue: 1 }
   );
 
-  getPagination() {}
-
   getAllProducts({
     limit = 9,
     offset = 1,
