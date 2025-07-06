@@ -7,6 +7,8 @@ export interface ProductsMapperInterface {
   sizes: string[];
   gender: string;
   images: string[];
+  tags: string[];
+  slug: string;
 }
 
 export interface ProductsMapperType {

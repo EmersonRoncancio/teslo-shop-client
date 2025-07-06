@@ -28,6 +28,8 @@ export class ProductsMapper {
       sizes: product.sizes,
       gender: product.gender,
       images: product.images,
+      tags: product.tags,
+      slug: product.slug,
     };
   }
 }

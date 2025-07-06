@@ -3,10 +3,11 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsServiceService } from '@products/services/products-service.service';
 import { catchError, map, of } from 'rxjs';
+import { ProductDetailsComponent } from './product-details/product-details.component';
 
 @Component({
   selector: 'app-product-page',
-  imports: [],
+  imports: [ProductDetailsComponent],
   templateUrl: './product-page.component.html',
 })
 export class ProductPageComponent {

@@ -9,7 +9,8 @@
       "@admin-dashboard/*": ["./src/app/auth/admin-dashboard/*"],
       "@products/*": ["./src/app/products/*"],
       "@sotore-front/*": ["./src/app/store-front/*"],
-      "@shared/*": ["./src/app/shared/*"]
+      "@shared/*": ["./src/app/shared/*"],
+      "@utils/*": ["./src/app/utils/*"]
     },
     "strict": true,
     "noImplicitOverride": true,
