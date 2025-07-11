@@ -15,6 +15,7 @@
       class="input input-bordered w-full"
       formControlName="title"
     />
+    <app-error-message [control]="productForm.get('title')!" />
 
     <input
       type="text"
@@ -22,6 +23,7 @@
       class="input input-bordered w-full"
       formControlName="slug"
     />
+    <app-error-message [control]="productForm.get('slug')!" />
 
     <textarea
       class="textarea textarea-bordered"
@@ -29,23 +31,29 @@
       rows="6"
       formControlName="description"
     ></textarea>
+    <app-error-message [control]="productForm.get('description')!" />
 
     <h2 class="text-lg font-bold">Datos de venta</h2>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-      <input
-        type="number"
-        placeholder="Precio"
-        class="input input-bordered w-full"
-        formControlName="price"
-      />
-
-      <input
-        type="number"
-        placeholder="Inventario"
-        class="input input-bordered w-full"
-        formControlName="stock"
-      />
+      <div>
+        <input
+          type="number"
+          placeholder="Precio"
+          class="input input-bordered w-full"
+          formControlName="price"
+        />
+        <app-error-message [control]="productForm.get('price')!" />
+      </div>
+      <div>
+        <input
+          type="number"
+          placeholder="Inventario"
+          class="input input-bordered w-full"
+          formControlName="stock"
+        />
+        <app-error-message [control]="productForm.get('stock')!" />
+      </div>
     </div>
 
     <!-- tags -->
@@ -55,14 +63,43 @@
       class="input input-bordered w-full"
       formControlName="tags"
     />
+    <app-error-message [control]="productForm.get('tags')!" />
 
     <!-- Botones para el género -->
     <div class="grid grid-cols-3 gap-2">
       <!-- <button class="btn btn-sm btn-outline">Masculino</button> -->
-      <button type="button" class="btn btn-sm btn-primary">Masculino</button>
-      <button type="button" class="btn btn-sm btn-accent">Femenino</button>
-      <button type="button" class="btn btn-sm btn-warning">Kid</button>
-      <button type="button" class="btn btn-sm btn-secondary">Unisex</button>
+      <button
+        [class.btn-primary]="productForm.value.gender === 'men'"
+        type="button"
+        class="btn btn-sm"
+        (click)="productForm.patchValue({ gender: 'men' })"
+      >
+        Masculino
+      </button>
+      <button
+        [class.btn-accent]="productForm.value.gender === 'women'"
+        type="button"
+        class="btn btn-sm"
+        (click)="productForm.patchValue({ gender: 'women' })"
+      >
+        Femenino
+      </button>
+      <button
+        [class.btn-warning]="productForm.value.gender === 'kid'"
+        type="button"
+        class="btn btn-sm"
+        (click)="productForm.patchValue({ gender: 'kid' })"
+      >
+        Kid
+      </button>
+      <button
+        [class.btn-secondary]="productForm.value.gender === 'unisex'"
+        type="button"
+        class="btn btn-sm"
+        (click)="productForm.patchValue({ gender: 'unisex' })"
+      >
+        Unisex
+      </button>
     </div>
 
     <!-- <select class="select select-bordered w-full">
@@ -74,7 +111,14 @@
     <!-- Sizes -->
     <div class="grid grid-cols-6 gap-2">
       @for (size of sizes; track size) {
-      <button type="button" class="btn btn-sm btn-outline">{{ size }}</button>
+      <button
+        (click)="onChangeSize(size)"
+        type="button"
+        class="btn btn-sm"
+        [class.btn-primary]="productForm.value.sizes?.includes(size)"
+      >
+        {{ size }}
+      </button>
       }
     </div>
   </div>
@@ -85,8 +129,8 @@
       <button class="btn btn-secondary" type="submit">
         <!-- <span class="loading loading-spinner loading-sm"></span> -->
 
-        Guardar
-      </button>
+        Guardar</button
+      >Cruise the p
     </div>
 
     <app-carousel [images]="product().images" />
