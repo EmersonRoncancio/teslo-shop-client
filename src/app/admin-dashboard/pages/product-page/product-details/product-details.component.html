@@ -129,8 +129,8 @@
       <button class="btn btn-secondary" type="submit">
         <!-- <span class="loading loading-spinner loading-sm"></span> -->
 
-        Guardar</button
-      >Cruise the p
+        Guardar
+      </button>
     </div>
 
     <app-carousel [images]="product().images" />
@@ -138,3 +138,18 @@
     <input type="file" class="file-input file-input-bordered w-full mt-4" />
   </div>
 </form>
+@if (hasSuccess()) {
+<div
+  role="alert"
+  class="alert alert-success alert-outline fixed top-7 right-12 animate-bounce"
+>
+  <span>Producto Actulizado</span>
+</div>
+} @if(hasError()) {
+<div
+  role="alert"
+  class="alert alert-error alert-outline fixed top-7 right-12 animate-bounce"
+>
+  <span>Error al actualizar el producto</span>
+</div>
+}

@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import {
+  Gender,
   Product,
   Products,
 } from '@products/interfaces/getall-products.interface';
@@ -11,16 +12,29 @@ import {
   ProductsMapperType,
 } from '@products/interfaces/products-mapper.interface';
 import { ProductsMapper } from '@products/mappers/products.mapper';
-import { map, tap, of, Observable } from 'rxjs';
+import { map, tap, of, Observable, catchError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-type Gender = 'men' | 'women' | 'unisex' | 'kid' | '';
+type GenderType = 'men' | 'women' | 'unisex' | 'kid' | '';
 
 interface Options {
   limit?: number;
   offset?: number;
-  gender?: Gender;
+  gender?: GenderType;
 }
+
+const initialProducts: ProductsMapperInterface = {
+  id: 'new',
+  title: '',
+  price: 0,
+  description: '',
+  stock: 0,
+  sizes: [],
+  gender: Gender.Men,
+  images: [],
+  tags: [],
+  slug: '',
+};
 
 @Injectable({
   providedIn: 'root',
@@ -76,6 +90,10 @@ export class ProductsServiceService {
   }
 
   getProductById(productId: string) {
+    if (productId === 'new') {
+      return of(initialProducts);
+    }
+
     if (this.productCache.has(productId)) {
       const cachedProduct = this.productCache.get(
         productId
@@ -91,6 +109,57 @@ export class ProductsServiceService {
       map((response) => {
         console.log('response', response);
         return ProductsMapper.mapProduct(response);
+      })
+    );
+  }
+
+  upadateProduct(idProduct: string, product: Partial<ProductsMapperInterface>) {
+    return this.http
+      .patch(`${this.urlApi}/products/${idProduct}`, {
+        ...product,
+      })
+      .pipe(
+        map((response) => {
+          console.log('response', response);
+          const updatedProduct = ProductsMapper.mapProduct(response as Product);
+          this.productCache.set(idProduct, updatedProduct);
+          return updatedProduct;
+        }),
+        tap((updatedProduct) => {
+          this.updateProductCache(idProduct, updatedProduct);
+        }),
+        catchError(() => {
+          console.error('Error updating product');
+          return of(null); // Return null or handle the error as needed
+        })
+      );
+  }
+
+  updateProductCache(idProduct: string, product: ProductsMapperInterface) {
+    this.productCache.set(idProduct, product);
+
+    this.productsCache.forEach((response) => {
+      response.products = response.products.map((p) => {
+        if (p.id === idProduct) {
+          return product;
+        }
+        return p;
+      });
+    });
+  }
+
+  createProduct(product: Partial<ProductsMapperInterface>) {
+    return this.http.post<Product>(`${this.urlApi}/products`, product).pipe(
+      map((response) => {
+        console.log('response', response);
+        const newProduct = ProductsMapper.mapProduct(response);
+        this.productCache.set(newProduct.id, newProduct);
+        this.updateProductCache(newProduct.id, newProduct);
+        return newProduct;
+      }),
+      catchError(() => {
+        console.error('Error creating product');
+        return of(null); // Return null or handle the error as needed
       })
     );
   }

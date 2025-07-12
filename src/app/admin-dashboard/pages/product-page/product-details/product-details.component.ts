@@ -1,9 +1,11 @@
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CarouselComponent } from '@products/components/carousel/carousel.component';
 import { Product } from '@products/interfaces/getall-products.interface';
 import { ProductsMapperInterface } from '@products/interfaces/products-mapper.interface';
 import { ProductsMapper } from '@products/mappers/products.mapper';
+import { ProductsServiceService } from '@products/services/products-service.service';
 import { FormUtils } from '@utils/form.utils';
 import { ErrorMessageComponent } from 'src/app/admin-dashboard/components/error-message/error-message.component';
 
@@ -16,6 +18,10 @@ export class ProductDetailsComponent implements OnInit {
   product = input.required<ProductsMapperInterface>();
   fb = inject(FormBuilder);
   formUtils = FormUtils;
+  productService = inject(ProductsServiceService);
+  hasSuccess = signal(false);
+  hasError = signal(false);
+  router = inject(Router);
 
   productForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -40,7 +46,64 @@ export class ProductDetailsComponent implements OnInit {
   sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
   onSubumit() {
-    console.log('Formulario enviado', this.productForm.value);
+    if (!this.productForm.valid) {
+      this.productForm.markAllAsTouched();
+      return;
+    }
+
+    const productData: Partial<ProductsMapperInterface> = {
+      title: this.productForm.value.title!,
+      price: +this.productForm.value.price!,
+      description: this.productForm.value.description!,
+      slug: this.productForm.value.slug!,
+      stock: +this.productForm.value.stock!,
+      sizes: this.productForm.value.sizes || [],
+      gender: this.productForm.value.gender!,
+      images: this.product().images || [],
+      tags:
+        this.productForm.value.tags
+          ?.toLocaleLowerCase()
+          ?.split(',')
+          .map((tag: string) => tag.trim()) || [],
+    };
+
+    if (this.product().id === 'new') {
+      this.productService.createProduct(productData).subscribe({
+        next: (responseData) => {
+          console.log('Product created successfully:', responseData);
+          this.hasSuccess.set(true);
+          setTimeout(() => {
+            this.hasSuccess.set(false);
+            this.router.navigate(['/admin/products', responseData?.id]);
+          }, 3000);
+        },
+        error: (error) => {
+          this.hasError.set(true);
+          setTimeout(() => {
+            this.hasError.set(false);
+          }, 3000);
+        },
+      });
+
+      return;
+    }
+
+    this.productService
+      .upadateProduct(this.product().id, productData)
+      .subscribe({
+        next: (responseData) => {
+          this.hasSuccess.set(true);
+          setTimeout(() => {
+            this.hasSuccess.set(false);
+          }, 3000);
+        },
+        error: (error) => {
+          this.hasError.set(true);
+          setTimeout(() => {
+            this.hasError.set(false);
+          }, 3000);
+        },
+      });
   }
 
   setFormValues(product: Partial<ProductsMapperInterface>) {

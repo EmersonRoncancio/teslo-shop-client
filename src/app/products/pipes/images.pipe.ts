@@ -7,9 +7,13 @@ import { environment } from 'src/environments/environment';
 export class ImagesPipe implements PipeTransform {
   urlApi = environment.url_api;
 
-  transform(images: string | string[]): any {
+  transform(images: string | string[] | null): any {
+    if (images === null) {
+      return './assets/images/not-image.png';
+    }
+
     if (!images || images.length === 0) {
-      return `${this.urlApi}/files/product/default-image.webp`;
+      return './assets/images/not-image.png';
     }
 
     if (typeof images === 'string') {

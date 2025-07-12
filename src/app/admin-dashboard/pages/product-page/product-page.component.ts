@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsServiceService } from '@products/services/products-service.service';
-import { catchError, map, of } from 'rxjs';
+import { catchError, map, of, tap } from 'rxjs';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 
 @Component({
@@ -23,6 +23,9 @@ export class ProductPageComponent {
       if (!params.idProduct) return of();
 
       return this.productsService.getProductById(params.idProduct).pipe(
+        tap((responseData) => {
+          console.log('Product data:', responseData);
+        }),
         catchError(() => {
           this.router.navigate(['/admin/products']);
           return of(null);

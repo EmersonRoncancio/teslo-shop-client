@@ -4,10 +4,11 @@ import { ListProductsComponent } from '@products/components/list-products/list-p
 import { ProductsServiceService } from '@products/services/products-service.service';
 import { PaginationService } from '@shared/components/pagination/pagination.service';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-products-page',
-  imports: [ListProductsComponent, PaginationComponent],
+  imports: [ListProductsComponent, PaginationComponent, RouterLink],
   templateUrl: './products-page.component.html',
 })
 export class ProductsPageComponent {

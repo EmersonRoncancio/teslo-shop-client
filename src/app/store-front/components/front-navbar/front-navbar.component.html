@@ -66,13 +66,15 @@
   </div>
   @if(authService.authStatus() === 'authenticated') {
   <div class="navbar-end">
-    <a class="btn btn-ghost text-secondary" routerLink="/cart">
+    <a class="btn btn-ghost text-secondary" routerLink="/">
       {{ authService.user()?.fullName }}
     </a>
   </div>
-  <!-- <div class="navbar-center">
-    <span class="badge badge-secondary">user</span>
-  </div> -->
+  @if(authService.user()?.roles?.includes('admin')){
+  <a class="btn btn-primary mx-3" routerLink="/admin/">
+    Panel de administración
+  </a>
+  }
   <div class="navbar-center">
     <button
       (click)="authService.logout()"
