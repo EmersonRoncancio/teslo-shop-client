@@ -1,4 +1,11 @@
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CarouselComponent } from '@products/components/carousel/carousel.component';
@@ -22,6 +29,11 @@ export class ProductDetailsComponent implements OnInit {
   hasSuccess = signal(false);
   hasError = signal(false);
   router = inject(Router);
+  viewImages = signal<string[]>([]);
+  images = computed(() => {
+    return [...this.product().images, ...this.viewImages()];
+  });
+  filesImages: FileList | null = null;
 
   productForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -129,6 +141,16 @@ export class ProductDetailsComponent implements OnInit {
       this.productForm.patchValue({
         sizes: [...sizes, size],
       });
+    }
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.filesImages = input.files;
+      const files = Array.from(input.files);
+      const images: string[] = files.map((file) => URL.createObjectURL(file));
+      this.viewImages.set(images);
     }
   }
 }

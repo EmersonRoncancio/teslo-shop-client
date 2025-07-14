@@ -8,8 +8,14 @@ export class ImagesPipe implements PipeTransform {
   urlApi = environment.url_api;
 
   transform(images: string | string[] | null): any {
+    console.log('ImagesPipe called with:', images);
     if (images === null) {
       return './assets/images/not-image.png';
+    }
+
+    if (typeof images === 'string' && images.startsWith('blob:')) {
+      console.warn('Image URL is already a full URL:', images);
+      return images;
     }
 
     if (!images || images.length === 0) {

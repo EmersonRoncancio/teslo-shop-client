@@ -133,10 +133,27 @@
       </button>
     </div>
 
-    <app-carousel [images]="product().images" />
+    <app-carousel [images]="images()" />
 
-    <input type="file" class="file-input file-input-bordered w-full mt-4" />
+    <input
+      type="file"
+      multiple
+      accept="image/*"
+      (change)="onFileSelected($event)"
+      class="file-input file-input-bordered w-full mt-4"
+    />
+
+    <div class="grid grid-cols-4 gap-2">
+      @for (img of viewImages(); track $index) {
+      <img
+        class="w-[100px] h-[100px] rounded-xl object-cover"
+        [src]="img"
+        alt="Image {{ $index + 1 }}"
+      />
+      }
+    </div>
   </div>
+  <!-- Fin Imágenes -->
 </form>
 @if (hasSuccess()) {
 <div
