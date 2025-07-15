@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { FilesInterface } from '@products/interfaces/files.interface';
 import {
   Gender,
   Product,
@@ -12,7 +13,15 @@ import {
   ProductsMapperType,
 } from '@products/interfaces/products-mapper.interface';
 import { ProductsMapper } from '@products/mappers/products.mapper';
-import { map, tap, of, Observable, catchError } from 'rxjs';
+import {
+  map,
+  tap,
+  of,
+  Observable,
+  catchError,
+  firstValueFrom,
+  forkJoin,
+} from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 type GenderType = 'men' | 'women' | 'unisex' | 'kid' | '';
@@ -162,5 +171,37 @@ export class ProductsServiceService {
         return of(null); // Return null or handle the error as needed
       })
     );
+  }
+
+  uploadImages(files: FileList): Observable<string[]> {
+    if (!files) return of([]);
+
+    const fileArray = Array.from(files).map((file) => {
+      return this.uploadImage(file);
+    });
+
+    const fileObservables = fileArray.map((file$) => firstValueFrom(file$));
+
+    return forkJoin(fileObservables);
+  }
+
+  uploadImage(file: File): Observable<string> {
+    if (!file) return of('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http
+      .post<FilesInterface>(`${this.urlApi}/files/product`, formData)
+      .pipe(
+        map((response) => {
+          console.log('Image uploaded successfully:', response);
+          return response.fileName;
+        }),
+        catchError((error) => {
+          console.error('Error uploading image:', error);
+          return of(''); // Return an empty string or handle the error as needed
+        })
+      );
   }
 }

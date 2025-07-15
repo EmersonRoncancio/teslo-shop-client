@@ -14,6 +14,7 @@ import { ProductsMapperInterface } from '@products/interfaces/products-mapper.in
 import { ProductsMapper } from '@products/mappers/products.mapper';
 import { ProductsServiceService } from '@products/services/products-service.service';
 import { FormUtils } from '@utils/form.utils';
+import { firstValueFrom } from 'rxjs';
 import { ErrorMessageComponent } from 'src/app/admin-dashboard/components/error-message/error-message.component';
 
 @Component({
@@ -57,11 +58,23 @@ export class ProductDetailsComponent implements OnInit {
   });
   sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-  onSubumit() {
+  async onSubumit() {
     if (!this.productForm.valid) {
       this.productForm.markAllAsTouched();
       return;
     }
+
+    let images: string[] = [];
+
+    await firstValueFrom(
+      this.productService.uploadImages(this.filesImages!)
+    ).then((res) => {
+      console.log('Uploaded images:', res);
+      console.log('product', this.product().images);
+      images = [...this.product().images, ...res];
+    });
+
+    console.log('images', images);
 
     const productData: Partial<ProductsMapperInterface> = {
       title: this.productForm.value.title!,
@@ -71,7 +84,7 @@ export class ProductDetailsComponent implements OnInit {
       stock: +this.productForm.value.stock!,
       sizes: this.productForm.value.sizes || [],
       gender: this.productForm.value.gender!,
-      images: this.product().images || [],
+      images: images || [],
       tags:
         this.productForm.value.tags
           ?.toLocaleLowerCase()
